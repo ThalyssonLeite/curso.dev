@@ -26,7 +26,9 @@ export default {
 };
 
 function getSSLValues() {
+	const isSSLModeRequired = process.env.POSTGRES_SSL === "require";
 	const isNotLocal = process.env.NODE_ENV !== "development";
-	const CACertificate = process.env.POSTGRES_CA;
-	return CACertificate ? { ca: CACertificate } : isNotLocal;
+	return process.env.POSTGRES_CA
+		? { ca: process.env.POSTGRES_CA }
+		: isNotLocal || isSSLModeRequired;
 }
