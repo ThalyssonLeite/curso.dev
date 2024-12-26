@@ -1,11 +1,41 @@
 import database from "infra/database";
 
+async function getVersion() {
+	const response = await database.query("SHOW server_version");
+	const result = response.rows[0];
+	const version = result.server_version;
+	return version;
+}
+
+async function getMaxConnections() {
+	const response = await database.query("SHOW max_connections");
+	const result = response.rows;
+	const maxConnections = result[0].max_connections;
+	return Number(maxConnections);
+}
+
+async function getOpenedConnections() {
+	const databaseName = process.env.POSTGRES_DB;
+	const response = await database.query(
+		`SELECT COUNT(*)::int FROM pg_stat_activity WHERE datname = '${databaseName}'`,
+	);
+	const result = response.rows;
+	const openedConnections = result[0].count;
+	return Number(openedConnections);
+}
+
 async function status(request, response) {
-	const result = await database.query("SELECT 1 + 1 as sum");
-	console.log(result.rows);
-	response
-		.status(200)
-		.json({ chave: "Alunos do curso.dev são pessoas acima da média" });
+	const updatedAt = new Date().toISOString();
+	response.status(200).json({
+		updated_at: updatedAt,
+		services: {
+			database: {
+				version: await getVersion(),
+				max_connections: await getMaxConnections(),
+				opened_connections: await getOpenedConnections(),
+			},
+		},
+	});
 }
 
 export default status;
