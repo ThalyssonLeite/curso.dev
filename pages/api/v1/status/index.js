@@ -24,7 +24,7 @@ async function getOpenedConnections() {
 	return Number(openedConnections);
 }
 
-async function status(request, response) {
+export default async (request, response) => {
 	const updatedAt = new Date().toISOString();
 	response.status(200).json({
 		updated_at: updatedAt,
@@ -36,6 +36,4 @@ async function status(request, response) {
 			},
 		},
 	});
-}
-
-export default status;
+};
