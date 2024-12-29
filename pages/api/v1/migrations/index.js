@@ -8,7 +8,7 @@ export default async (request, response) => {
 	if (!allowedMethods.inlcudes(request.method))
 		return response
 			.status(405)
-			.end({ error: `Method "${request.method}" not allowed` });
+			.json({ error: `Method "${request.method}" not allowed` });
 	let dbClient;
 	try {
 		dbClient = await database.getNewClient();
