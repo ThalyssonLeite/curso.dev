@@ -1,11 +1,14 @@
 import database from "infra/database";
 import migrationsRunner from "node-pg-migrate";
+import { error } from "node:console";
 import path from "node:path";
 
 export default async (request, response) => {
 	const allowedMethods = ["GET", "POST"];
 	if (!allowedMethods.inlcudes(request.method))
-		return response.status(405).end();
+		return response
+			.status(405)
+			.end({ error: `Method "${request.method}" not allowed` });
 	let dbClient;
 	try {
 		dbClient = await database.getNewClient();
