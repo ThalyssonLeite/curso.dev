@@ -3,7 +3,10 @@
 	"version": "1.0.0",
 	"main": "index.js",
 	"scripts": {
-		"dev": "next dev",
+		"dev": "npm run services:up && next dev",
+		"services:up": "docker compose --file=infra/compose.yml up --detach",
+		"services:stop": "docker compose --file=infra/compose.yml stop",
+		"services:down": "docker compose --file=infra/compose.yml down",
 		"lint:check": "prettier --check .",
 		"lint:fix": "prettier --write .",
 		"test": "jest",
